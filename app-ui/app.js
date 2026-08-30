@@ -5,6 +5,22 @@ const API_BASE_URL = 'https://clonefest-2.onrender.com';
 // (Matches the seeded "BugOff Demo" project, key BO, id 1.)
 const CURRENT_PROJECT_ID = 1;
 
+// Turns a FastAPI error response's `detail` (string, or a list of
+// Pydantic validation error objects) into one readable string.
+function formatApiError(data, fallback) {
+  if (!data || !data.detail) return fallback;
+  if (typeof data.detail === 'string') return data.detail;
+  if (Array.isArray(data.detail)) {
+    return data.detail
+      .map((e) => {
+        const field = Array.isArray(e.loc) ? e.loc[e.loc.length - 1] : '';
+        return field ? `${field}: ${e.msg}` : e.msg;
+      })
+      .join('; ');
+  }
+  return fallback;
+}
+
 // DOM Elements
 const authView = document.getElementById('auth-view');
 const dashboardView = document.getElementById('dashboard-view');
@@ -189,7 +205,7 @@ loginForm.addEventListener('submit', async (e) => {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.detail || 'Invalid username or password');
+      throw new Error(formatApiError(data, 'Invalid username or password'));
     }
 
     localStorage.setItem('access_token', data.access_token);
@@ -259,7 +275,7 @@ signupForm.addEventListener('submit', async (e) => {
     const registerData = await registerResponse.json();
 
     if (!registerResponse.ok) {
-      throw new Error(registerData.detail || 'Could not create account');
+      throw new Error(formatApiError(registerData, 'Could not create account'));
     }
 
     // Auto-login right after successful signup so the person lands
