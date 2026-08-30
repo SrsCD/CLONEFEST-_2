@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BugSight Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans">
+
+  <!-- ================= AUTH VIEW ================= -->
+  <div id="auth-view" class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl">
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">BugSight</h1>
+        <p class="text-slate-400 text-sm mt-2">Sign in to access your bug tracking dashboard</p>
+      </div>
+
+      <div id="login-error" class="hidden mb-4 p-3 bg-red-950/50 border border-red-500/50 text-red-300 text-sm rounded-lg"></div>
+
+      <form id="login-form" class="space-y-5">
+        <div>
+          <label for="username" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Username</label>
+          <input type="text" id="username" required placeholder="e.g. alice"
+            class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition" />
+        </div>
+
+        <div>
+          <label for="password" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Password</label>
+          <input type="password" id="password" required placeholder="••••••••"
+            class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition" />
+        </div>
+
+        <button type="submit" id="login-btn"
+          class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 font-semibold rounded-lg text-white shadow-lg transition duration-200">
+          Sign In
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= DASHBOARD VIEW ================= -->
+  <div id="dashboard-view" class="hidden min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-lg">B</div>
+        <span class="font-bold text-xl tracking-tight">BugSight Dashboard</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span id="user-display" class="text-sm text-slate-400"></span>
+        <button id="logout-btn" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-700 transition">
+          Sign Out
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-6 space-y-6">
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+          <p class="text-slate-400 text-xs uppercase font-medium">Total Tracked</p>
+          <p class="text-2xl font-bold mt-2 text-white">12 Issues</p>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+          <p class="text-slate-400 text-xs uppercase font-medium">Critical Radius</p>
+          <p class="text-2xl font-bold mt-2 text-red-400">3 Open</p>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+          <p class="text-slate-400 text-xs uppercase font-medium">Resolved Today</p>
+          <p class="text-2xl font-bold mt-2 text-emerald-400">5 Closed</p>
+        </div>
+      </div>
+
+      <!-- Bug Table Section -->
+      <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg">
+        <div class="p-5 border-b border-slate-800 flex justify-between items-center">
+          <h2 class="font-bold text-lg">Active Bug List & Blast Radius</h2>
+          <button class="bg-indigo-600 hover:bg-indigo-500 text-xs px-3 py-2 rounded-lg font-medium transition">
+            + Report New Bug
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-slate-300">
+            <thead class="bg-slate-800/50 text-xs uppercase font-medium text-slate-400 border-b border-slate-800">
+              <tr>
+                <th class="px-6 py-4">ID</th>
+                <th class="px-6 py-4">Title</th>
+                <th class="px-6 py-4">Severity</th>
+                <th class="px-6 py-4">Blast Radius</th>
+                <th class="px-6 py-4">Status</th>
+              </tr>
+            </thead>
+            <tbody id="bug-table-body" class="divide-y divide-slate-800">
+              <tr class="hover:bg-slate-800/30">
+                <td class="px-6 py-4 font-mono text-xs text-indigo-400">BUG-101</td>
+                <td class="px-6 py-4 font-medium text-white">Memory leak on model inference</td>
+                <td class="px-6 py-4"><span class="px-2 py-1 text-xs bg-red-950 text-red-400 rounded-md border border-red-800">High</span></td>
+                <td class="px-6 py-4 text-slate-400">Auth & Analytics service</td>
+                <td class="px-6 py-4"><span class="text-xs bg-amber-950 text-amber-400 px-2 py-0.5 rounded border border-amber-800">In Progress</span></td>
+              </tr>
+              <tr class="hover:bg-slate-800/30">
+                <td class="px-6 py-4 font-mono text-xs text-indigo-400">BUG-102</td>
+                <td class="px-6 py-4 font-medium text-white">OAuth2 token expiration refresh loop</td>
+                <td class="px-6 py-4"><span class="px-2 py-1 text-xs bg-amber-950 text-amber-400 rounded-md border border-amber-800">Medium</span></td>
+                <td class="px-6 py-4 text-slate-400">Frontend Client</td>
+                <td class="px-6 py-4"><span class="text-xs bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded border border-emerald-800">Verified</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
