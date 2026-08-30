@@ -1,10 +1,6 @@
 {
     "rewrites": [
         {
-            "source": "/",
-            "destination": "/landing-page/index.html"
-        },
-        {
             "source": "/app",
             "destination": "/app-ui/index.html"
         },
