@@ -1,4 +1,4 @@
-# BugOff — Core Backend (Person 2)
+# BugOff — Core Backend 
 
 FastAPI + PostgreSQL backend for a modern bug-tracking platform.
 
