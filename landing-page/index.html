@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #08080a; }
+  * { box-sizing: border-box; }
+  ::selection { background: rgba(78,207,224,0.22); }
+  a { color: #e8e9ec; text-decoration: none; }
+  a:hover { color: #4ecfe0; }
+  @keyframes bs-pulse { 0%,100% { opacity: 0.35; } 50% { opacity: 1; } }
+  model-viewer { width: 100%; height: 100%; --poster-color: transparent; }
+  @media (max-width: 1100px) {
+    nav > div:nth-child(2) { display: none !important; }
+    section#top, section#api { grid-template-columns: 1fr !important; }
+    section#engine div[style*="repeat(2,1fr)"], section#architecture div[style*="repeat(4,1fr)"] { grid-template-columns: 1fr 1fr !important; }
+    h1 { font-size: 46px !important; }
+  }
+</style>
+</helmet>
+<div style="background:#08080a;color:#e8e9ec;font-family:'Instrument Sans',Helvetica,sans-serif;min-height:100vh;overflow-x:hidden;position:relative;-webkit-font-smoothing:antialiased">
+
+  <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:{{ glowOpacity }}">
+    <div style="position:absolute;top:-320px;left:-180px;width:900px;height:900px;border-radius:50%;background:radial-gradient(circle,rgba(78,207,224,0.10) 0%,rgba(78,207,224,0) 62%)"></div>
+    <div style="position:absolute;top:280px;right:-260px;width:820px;height:820px;border-radius:50%;background:radial-gradient(circle,rgba(69,214,159,0.08) 0%,rgba(69,214,159,0) 60%)"></div>
+    <div style="position:absolute;top:1500px;left:20%;width:900px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(78,207,224,0.05) 0%,rgba(78,207,224,0) 65%)"></div>
+  </div>
+
+  <header style="position:sticky;top:0;z-index:40;backdrop-filter:blur(18px);background:rgba(8,8,10,0.72);border-bottom:1px solid rgba(255,255,255,0.07)">
+    <nav style="max-width:1360px;margin:0 auto;padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:32px">
+      <a href="#top" style="display:flex;align-items:baseline;gap:8px;font-size:14px;letter-spacing:-0.01em">
+        <span style="font-weight:600;color:#f4f5f7">BugSight</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#5c5e66">//</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#85878f;letter-spacing:0.04em">IssueForge</span>
+      </a>
+      <div style="display:flex;align-items:center;gap:30px;font-size:13px;color:#9a9ca4">
+        <a href="#architecture" style="color:#9a9ca4">Architecture</a>
+        <a href="#engine" style="color:#9a9ca4">Blast Radius Engine</a>
+        <a href="#api" style="color:#9a9ca4">API Specs</a>
+        <a href="#audit" style="color:#9a9ca4">Audit Log</a>
+      </div>
+      <div style="display:flex;align-items:center;gap:18px">
+        <a href="#api" style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#85878f;letter-spacing:0.03em">Swagger Docs</a>
+        <a href="#top" style="display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 16px;border-radius:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);font-size:13px;font-weight:500;color:#f4f5f7" style-hover="background:rgba(255,255,255,0.10);border-color:rgba(78,207,224,0.45);color:#f4f5f7">
+          Launch Dashboard
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <section id="top" style="position:relative;max-width:1360px;margin:0 auto;padding:96px 40px 88px;display:grid;grid-template-columns:1.02fr 1fr;gap:64px;align-items:center">
+    <div>
+      <div style="display:inline-flex;align-items:center;gap:10px;padding:6px 12px;border-radius:999px;border:1px solid rgba(255,255,255,0.10);background:rgba(255,255,255,0.02)">
+        <span style="width:5px;height:5px;border-radius:50%;background:#4ecfe0;box-shadow:0 0 10px rgba(78,207,224,0.8);animation:bs-pulse 2.4s ease-in-out infinite"></span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.10em;color:#8a8c94">FASTAPI CORE • POSTGRESQL • SERVER-ENFORCED STATE MACHINE</span>
+      </div>
+      <h1 style="margin:26px 0 0;font-size:60px;line-height:1.03;letter-spacing:-0.035em;font-weight:500;color:#f6f7f9;text-wrap:balance;max-width:15ch">Modern issue tracking with explainable intelligence.</h1>
+      <p style="margin:24px 0 0;font-size:16.5px;line-height:1.62;color:#9a9ca4;max-width:52ch;text-wrap:pretty">Reconstructed from first principles. Root-cause clustering, real-time dependency graphs, and automated blast-radius calculations with sub-50ms query latency.</p>
+      <div style="display:flex;align-items:center;gap:14px;margin-top:38px">
+        <a href="#engine" style="position:relative;display:inline-flex;align-items:center;gap:9px;height:44px;padding:0 22px;border-radius:10px;background:#101216;border:1px solid rgba(78,207,224,0.42);font-size:14px;font-weight:500;color:#f4f5f7;box-shadow:0 0 0 1px rgba(78,207,224,0.10),0 0 26px rgba(78,207,224,0.16),inset 0 1px 0 rgba(255,255,255,0.06)" style-hover="border-color:rgba(78,207,224,0.75);box-shadow:0 0 0 1px rgba(78,207,224,0.18),0 0 38px rgba(78,207,224,0.26),inset 0 1px 0 rgba(255,255,255,0.08)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+          Explore Sandbox
+        </a>
+        <a href="#api" style="display:inline-flex;align-items:center;gap:9px;height:44px;padding:0 20px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.10);font-size:14px;color:#b6b8bf" style-hover="background:rgba(255,255,255,0.03);color:#f4f5f7;border-color:rgba(255,255,255,0.18)">
+          View OpenAPI Spec
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+        </a>
+      </div>
+      <div style="display:flex;gap:26px;margin-top:46px;padding-top:26px;border-top:1px solid rgba(255,255,255,0.07);font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.08em;color:#5c5e66">
+        <span>PY 3.12</span>
+        <span>PYDANTIC V2</span>
+        <span>ALEMBIC</span>
+        <span>PYTEST 16/16</span>
+      </div>
+    </div>
+
+    <div style="position:relative">
+      <div style="position:relative;border-radius:16px;border:1px solid rgba(255,255,255,0.10);background:linear-gradient(180deg,rgba(255,255,255,0.035) 0%,rgba(255,255,255,0.012) 100%);backdrop-filter:blur(12px);overflow:hidden;box-shadow:0 30px 90px -30px rgba(0,0,0,0.9)">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.07)">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.09em;color:#6d6f77">MAINFRAME_VIEWPORT</span>
+          <span style="display:inline-flex;align-items:center;gap:7px;padding:4px 9px;border-radius:6px;border:1px solid rgba(69,214,159,0.28);background:rgba(69,214,159,0.06);font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.07em;color:#7fe0b6">
+            <span style="width:4px;height:4px;border-radius:50%;background:#45d69f;animation:bs-pulse 2s ease-in-out infinite"></span>
+            PORT: 8000 // STATUS: HEALTHY
+          </span>
+        </div>
+        <div ref="{{ viewportRef }}" style="position:relative;height:470px;background:radial-gradient(120% 90% at 50% 15%,rgba(78,207,224,0.07) 0%,rgba(8,8,10,0) 70%),#0a0a0d">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.09em;color:#4a4c54">LOADING GEOMETRY…</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-top:1px solid rgba(255,255,255,0.07);font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.07em;color:#5c5e66">
+          <span>DRAG TO INSPECT // SCROLL TO ZOOM</span>
+          <span>GLB // 60FPS</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="engine" style="position:relative;max-width:1360px;margin:0 auto;padding:44px 40px 0">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:24px;padding-bottom:28px;border-bottom:1px solid rgba(255,255,255,0.07)">
+      <h2 style="margin:0;font-size:26px;font-weight:500;letter-spacing:-0.02em;color:#f2f3f5">Core Intelligence Engine</h2>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.09em;color:#5c5e66">04 SUBSYSTEMS</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.07);border-top:none;border-radius:0 0 14px 14px;overflow:hidden">
+      <div style="padding:34px 32px 36px;background:#09090b" style-hover="background:#0c0c10">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#4ecfe0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path><path d="M8 11h6"></path><path d="M11 8v6"></path></svg>
+        <h3 style="margin:20px 0 0;font-size:16.5px;font-weight:500;letter-spacing:-0.012em;color:#eff0f3">Explainable Triage &amp; Duplicate Matching</h3>
+        <p style="margin:11px 0 0;font-size:14px;line-height:1.6;color:#8e9098;max-width:44ch;text-wrap:pretty">Real-time similarity scores and transparent reasoning trees before saving reports.</p>
+        <span style="display:inline-block;margin-top:22px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.05em;color:#5f6169;padding:4px 8px;border-radius:5px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02)">POST /bugs/triage</span>
+      </div>
+      <div style="padding:34px 32px 36px;background:#09090b" style-hover="background:#0c0c10">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#4ecfe0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="16" width="6" height="6" rx="1"></rect><rect x="2" y="16" width="6" height="6" rx="1"></rect><rect x="9" y="2" width="6" height="6" rx="1"></rect><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"></path><path d="M12 12V8"></path></svg>
+        <h3 style="margin:20px 0 0;font-size:16.5px;font-weight:500;letter-spacing:-0.012em;color:#eff0f3">Blast Radius &amp; Dependency Resolution</h3>
+        <p style="margin:11px 0 0;font-size:14px;line-height:1.6;color:#8e9098;max-width:44ch;text-wrap:pretty">Quantified impact mapping across services (<span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#b6b8bf">GET /bugs/{id}/dependencies</span>) to isolate root blockers.</p>
+        <span style="display:inline-block;margin-top:22px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.05em;color:#5f6169;padding:4px 8px;border-radius:5px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02)">GRAPH TRAVERSAL // CTE</span>
+      </div>
+      <div style="padding:34px 32px 36px;background:#09090b" style-hover="background:#0c0c10">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#45d69f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path></svg>
+        <h3 style="margin:20px 0 0;font-size:16.5px;font-weight:500;letter-spacing:-0.012em;color:#eff0f3">Security Vulnerability Protocol</h3>
+        <p style="margin:11px 0 0;font-size:14px;line-height:1.6;color:#8e9098;max-width:44ch;text-wrap:pretty">Server-side RBAC, auto-restricted access, and dedicated CVSS exploitability lifecycle management.</p>
+        <span style="display:inline-block;margin-top:22px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.05em;color:#5f6169;padding:4px 8px;border-radius:5px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02)">CVSS 3.1 // RBAC</span>
+      </div>
+      <div style="padding:34px 32px 36px;background:#09090b" style-hover="background:#0c0c10">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#45d69f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 9a9 9 0 0 1-9 9"></path><line x1="6" y1="3" x2="6" y2="15"></line></svg>
+        <h3 style="margin:20px 0 0;font-size:16.5px;font-weight:500;letter-spacing:-0.012em;color:#eff0f3">Code Genealogy &amp; Regression Detection</h3>
+        <p style="margin:11px 0 0;font-size:14px;line-height:1.6;color:#8e9098;max-width:44ch;text-wrap:pretty">Historical pattern recognition connecting recurrent regressions to specific modules.</p>
+        <span style="display:inline-block;margin-top:22px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.05em;color:#5f6169;padding:4px 8px;border-radius:5px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02)">GIT BLAME INDEX</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="architecture" style="position:relative;max-width:1360px;margin:0 auto;padding:64px 40px 0">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.07);border-radius:14px;overflow:hidden">
+      <div style="padding:26px 28px;background:#09090b">
+        <div style="font-size:30px;font-weight:500;letter-spacing:-0.03em;color:#f4f5f7;font-family:'JetBrains Mono',monospace">16/16</div>
+        <div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.09em;color:#6d6f77;line-height:1.5">AUTOMATED PYTEST SUITES PASSING</div>
+      </div>
+      <div style="padding:26px 28px;background:#09090b">
+        <div style="font-size:30px;font-weight:500;letter-spacing:-0.03em;color:#f4f5f7;font-family:'JetBrains Mono',monospace">12</div>
+        <div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.09em;color:#6d6f77;line-height:1.5">POSTGRESQL RELATIONAL TABLES &amp; ENUMS</div>
+      </div>
+      <div style="padding:26px 28px;background:#09090b">
+        <div style="font-size:30px;font-weight:500;letter-spacing:-0.03em;color:#4ecfe0;font-family:'JetBrains Mono',monospace">&lt;50ms</div>
+        <div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.09em;color:#6d6f77;line-height:1.5">ENDPOINT RESPONSE LATENCY</div>
+      </div>
+      <div style="padding:26px 28px;background:#09090b">
+        <div style="font-size:30px;font-weight:500;letter-spacing:-0.03em;color:#45d69f;font-family:'JetBrains Mono',monospace">100%</div>
+        <div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.09em;color:#6d6f77;line-height:1.5">SERVER-ENFORCED STATE TRANSITIONS</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="api" style="position:relative;max-width:1360px;margin:0 auto;padding:80px 40px 0;display:grid;grid-template-columns:0.72fr 1.28fr;gap:56px;align-items:start">
+    <div>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.09em;color:#5c5e66">BLAST-RADIUS TERMINAL</span>
+      <h2 style="margin:16px 0 0;font-size:30px;font-weight:500;letter-spacing:-0.028em;line-height:1.14;color:#f3f4f6;text-wrap:balance">Every impact score is traceable to a query.</h2>
+      <p style="margin:16px 0 0;font-size:15px;line-height:1.62;color:#8e9098;max-width:40ch;text-wrap:pretty">The dependency resolver walks the service graph server-side and returns the reasoning alongside the result. No opaque model output.</p>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:30px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.04em;color:#6d6f77">recursive CTE // depth ≤ 4</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.04em;color:#6d6f77">deterministic ordering</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.04em;color:#6d6f77">audit-logged on read</span>
+      </div>
+    </div>
+    <div style="border-radius:14px;border:1px solid rgba(255,255,255,0.10);background:linear-gradient(180deg,rgba(255,255,255,0.03) 0%,rgba(255,255,255,0.008) 100%);overflow:hidden;box-shadow:0 30px 80px -34px rgba(0,0,0,0.9)">
+      <div style="display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.07)">
+        <div style="display:flex;gap:6px">
+          <span style="width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,0.12)"></span>
+          <span style="width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,0.12)"></span>
+          <span style="width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,0.12)"></span>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.07em;color:#6d6f77">bugsight — httpie — 80×26</span>
+        <span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.07em;color:#45d69f">200 OK // 38ms</span>
+      </div>
+      <pre style="margin:0;padding:22px 24px 26px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.72;color:#9a9ca4;overflow-x:auto"><span style="color:#45d69f">$</span> http GET :8000/bugs/4812/dependencies
+<span style="color:#5c5e66">{</span>
+  <span style="color:#7aa2c9">"bug_id"</span>: <span style="color:#c9a26d">4812</span>,
+  <span style="color:#7aa2c9">"title"</span>: <span style="color:#8fd6b4">"Auth token refresh drops tenant scope"</span>,
+  <span style="color:#7aa2c9">"blast_radius"</span>: <span style="color:#5c5e66">{</span>
+    <span style="color:#7aa2c9">"score"</span>: <span style="color:#c9a26d">0.86</span>,
+    <span style="color:#7aa2c9">"severity_projection"</span>: <span style="color:#8fd6b4">"critical"</span>,
+    <span style="color:#7aa2c9">"services_impacted"</span>: <span style="color:#c9a26d">7</span>,
+    <span style="color:#7aa2c9">"sessions_at_risk"</span>: <span style="color:#c9a26d">18420</span>
+  <span style="color:#5c5e66">}</span>,
+  <span style="color:#7aa2c9">"root_blockers"</span>: <span style="color:#5c5e66">[</span>
+    <span style="color:#5c5e66">{</span> <span style="color:#7aa2c9">"id"</span>: <span style="color:#c9a26d">4790</span>, <span style="color:#7aa2c9">"module"</span>: <span style="color:#8fd6b4">"identity.jwt"</span>,  <span style="color:#7aa2c9">"depth"</span>: <span style="color:#c9a26d">1</span> <span style="color:#5c5e66">}</span>,
+    <span style="color:#5c5e66">{</span> <span style="color:#7aa2c9">"id"</span>: <span style="color:#c9a26d">4664</span>, <span style="color:#7aa2c9">"module"</span>: <span style="color:#8fd6b4">"tenancy.resolver"</span>, <span style="color:#7aa2c9">"depth"</span>: <span style="color:#c9a26d">2</span> <span style="color:#5c5e66">}</span>
+  <span style="color:#5c5e66">]</span>,
+  <span style="color:#7aa2c9">"reasoning"</span>: <span style="color:#5c5e66">[</span>
+    <span style="color:#8fd6b4">"4790 blocks 4812 via shared refresh handler"</span>,
+    <span style="color:#8fd6b4">"tenancy.resolver regressed in commit a91f2c3"</span>,
+    <span style="color:#8fd6b4">"3 downstream services read scope from cache"</span>
+  <span style="color:#5c5e66">]</span>,
+  <span style="color:#7aa2c9">"state"</span>: <span style="color:#8fd6b4">"TRIAGED"</span>,
+  <span style="color:#7aa2c9">"transitions_allowed"</span>: <span style="color:#5c5e66">[</span><span style="color:#8fd6b4">"IN_PROGRESS"</span>, <span style="color:#8fd6b4">"BLOCKED"</span><span style="color:#5c5e66">]</span>
+<span style="color:#5c5e66">}</span></pre>
+    </div>
+  </section>
+
+  <section id="audit" style="position:relative;max-width:1360px;margin:0 auto;padding:80px 40px 0">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:24px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.07)">
+      <h2 style="margin:0;font-size:20px;font-weight:500;letter-spacing:-0.02em;color:#eff0f3">Audit Log</h2>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.09em;color:#5c5e66">IMMUTABLE // APPEND-ONLY</span>
+    </div>
+    <div style="display:flex;flex-direction:column">
+      <div style="display:grid;grid-template-columns:150px 130px 1fr 120px;gap:20px;padding:14px 2px;border-bottom:1px solid rgba(255,255,255,0.05);font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#85878f">
+        <span style="color:#5c5e66">2026-08-30 09:14:02</span>
+        <span style="color:#4ecfe0">STATE_CHANGE</span>
+        <span>bug/4812 TRIAGED → BLOCKED by root blocker 4790</span>
+        <span style="color:#5c5e66">svc:resolver</span>
+      </div>
+      <div style="display:grid;grid-template-columns:150px 130px 1fr 120px;gap:20px;padding:14px 2px;border-bottom:1px solid rgba(255,255,255,0.05);font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#85878f">
+        <span style="color:#5c5e66">2026-08-30 09:11:47</span>
+        <span style="color:#45d69f">DUPLICATE_MATCH</span>
+        <span>bug/4813 similarity 0.94 → merged into 4812</span>
+        <span style="color:#5c5e66">svc:triage</span>
+      </div>
+      <div style="display:grid;grid-template-columns:150px 130px 1fr 120px;gap:20px;padding:14px 2px;border-bottom:1px solid rgba(255,255,255,0.05);font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#85878f">
+        <span style="color:#5c5e66">2026-08-30 08:58:20</span>
+        <span style="color:#c9a26d">CVSS_UPDATE</span>
+        <span>vuln/CVE-2026-3311 exploitability raised to 8.1</span>
+        <span style="color:#5c5e66">svc:security</span>
+      </div>
+      <div style="display:grid;grid-template-columns:150px 130px 1fr 120px;gap:20px;padding:14px 2px;border-bottom:1px solid rgba(255,255,255,0.05);font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#85878f">
+        <span style="color:#5c5e66">2026-08-30 08:40:05</span>
+        <span style="color:#4ecfe0">REGRESSION_LINK</span>
+        <span>module tenancy.resolver linked to 3 prior regressions</span>
+        <span style="color:#5c5e66">svc:genealogy</span>
+      </div>
+    </div>
+  </section>
+
+  <footer style="position:relative;max-width:1360px;margin:96px auto 0;padding:22px 40px 40px;border-top:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:space-between;gap:24px">
+    <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.06em;color:#5c5e66">© 2026 IssueForge — BugSight</span>
+    <div style="display:flex;align-items:center;gap:24px">
+      <a href="#top" style="display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.05em;color:#85878f">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 9a9 9 0 0 1-9 9"></path><line x1="6" y1="3" x2="6" y2="15"></line></svg>
+        issueforge/bugsight
+      </a>
+      <span style="display:inline-flex;align-items:center;gap:8px;padding:4px 10px;border-radius:6px;border:1px solid rgba(69,214,159,0.26);background:rgba(69,214,159,0.05);font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.07em;color:#7fe0b6">
+        <span style="width:4px;height:4px;border-radius:50%;background:#45d69f;animation:bs-pulse 2s ease-in-out infinite"></span>
+        ALL SYSTEMS OPERATIONAL
+      </span>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showGlows&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Appearance&quot;},&quot;autoRotate&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;3D viewport&quot;},&quot;modelSrc&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://gxeffxwmmfmzlsqkqyav.supabase.co/storage/v1/object/public/models/Computer%20Room%20by%20Bruno%20Oliveira%20-%20cA_lcvRC4NA.glb&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;3D viewport&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.viewport = React.createRef();
+  }
+  componentDidMount() { this.mountModel(); }
+  componentDidUpdate(prev) {
+    if (prev.modelSrc !== this.props.modelSrc || prev.autoRotate !== this.props.autoRotate) {
+      if (this.mv) { this.mv.remove(); this.mv = null; }
+      this.mountModel();
+    }
+  }
+  async mountModel() {
+    const host = this.viewport.current;
+    if (!host || this.mv) return;
+    const src = this.props.modelSrc || "https://gxeffxwmmfmzlsqkqyav.supabase.co/storage/v1/object/public/models/Computer%20Room%20by%20Bruno%20Oliveira%20-%20cA_lcvRC4NA.glb";
+    try { await customElements.whenDefined("model-viewer"); } catch (e) { return; }
+    const mv = document.createElement("model-viewer");
+    mv.setAttribute("loading", "eager");
+    mv.setAttribute("reveal", "auto");
+    mv.setAttribute("poster", "");
+    mv.setAttribute("src", src);
+    mv.setAttribute("camera-controls", "");
+    mv.setAttribute("touch-action", "pan-y");
+    mv.setAttribute("interaction-prompt", "none");
+    mv.setAttribute("environment-image", "neutral");
+    mv.setAttribute("shadow-intensity", "1.1");
+    mv.setAttribute("shadow-softness", "1");
+    mv.setAttribute("exposure", "0.85");
+    mv.setAttribute("tone-mapping", "aces");
+    mv.setAttribute("camera-orbit", "35deg 72deg 105%");
+    mv.setAttribute("min-camera-orbit", "auto 0deg auto");
+    mv.setAttribute("field-of-view", "28deg");
+    if (this.props.autoRotate !== false) {
+      mv.setAttribute("auto-rotate", "");
+      mv.setAttribute("auto-rotate-delay", "600");
+      mv.setAttribute("rotation-per-second", "10deg");
+    }
+    mv.style.cssText = "position:absolute;inset:0;width:100%;height:100%;background:transparent;--progress-bar-color:#4ecfe0;--progress-mask:transparent";
+    host.appendChild(mv);
+    this.mv = mv;
+    try { mv.src = src; } catch (e) {}
+    this.pollTimer = setInterval(() => {
+      if (mv.loaded) {
+        clearInterval(this.pollTimer);
+        clearTimeout(this.stallTimer);
+        const hint = host.firstElementChild;
+        if (hint && hint !== mv) hint.style.display = "none";
+      }
+    }, 400);
+    this.stallTimer = setTimeout(() => {
+      if (!mv.loaded) {
+        const hint = host.firstElementChild;
+        if (hint && hint !== mv) hint.textContent = "GEOMETRY UNAVAILABLE // STATIC VIEW";
+      }
+    }, 10000);
+    mv.addEventListener("load", () => {
+      clearTimeout(this.stallTimer);
+      const hint = host.firstElementChild;
+      if (hint && hint !== mv) hint.style.display = "none";
+    });
+    mv.addEventListener("error", () => {
+      const hint = host.firstElementChild;
+      if (hint && hint !== mv) hint.textContent = "GEOMETRY UNAVAILABLE // OFFLINE";
+    });
+  }
+  componentWillUnmount() { clearTimeout(this.stallTimer); clearInterval(this.pollTimer); if (this.mv) { this.mv.remove(); this.mv = null; } }
+  renderVals() {
+    return {
+      viewportRef: this.viewport,
+      glowOpacity: this.props.showGlows === false ? 0 : 1
+    };
+  }
+}
+</script>
+</body>
+</html>
