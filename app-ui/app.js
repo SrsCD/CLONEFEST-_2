@@ -35,6 +35,11 @@ const authSubtitle = document.getElementById('auth-subtitle');
 const userDisplay = document.getElementById('user-display');
 const logoutBtn = document.getElementById('logout-btn');
 const bugTableBody = document.getElementById('bug-table-body');
+const newBugBtn = document.getElementById('new-bug-btn');
+const newBugModal = document.getElementById('new-bug-modal');
+const newBugClose = document.getElementById('new-bug-close');
+const newBugForm = document.getElementById('new-bug-form');
+const newBugError = document.getElementById('new-bug-error');
 
 // ---------------------------------------------------------------
 // API client — every authenticated call goes through this so the
@@ -62,7 +67,7 @@ async function apiRequest(path, options = {}) {
     let detail = `Request failed (${response.status})`;
     try {
       const data = await response.json();
-      detail = data.detail || detail;
+      detail = formatApiError(data, detail);
     } catch (_) {
       /* body wasn't JSON — keep the generic message */
     }
@@ -165,6 +170,61 @@ function renderStats(stats) {
   }
   if (resolvedEl) resolvedEl.textContent = `${stats.closed_bugs ?? '—'} Closed`;
 }
+
+// ---------------------------------------------------------------
+// New bug modal
+// ---------------------------------------------------------------
+newBugBtn.addEventListener('click', () => {
+  newBugError.classList.add('hidden');
+  newBugForm.reset();
+  newBugModal.classList.remove('hidden');
+});
+
+newBugClose.addEventListener('click', () => {
+  newBugModal.classList.add('hidden');
+});
+
+newBugModal.addEventListener('click', (e) => {
+  // Click on the dark backdrop (not the card itself) closes the modal.
+  if (e.target === newBugModal) newBugModal.classList.add('hidden');
+});
+
+newBugForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  newBugError.classList.add('hidden');
+
+  const title = document.getElementById('bug-title').value.trim();
+  const description = document.getElementById('bug-description').value.trim();
+  const severity = document.getElementById('bug-severity').value;
+  const priority = document.getElementById('bug-priority').value;
+
+  const submitBtn = document.getElementById('new-bug-submit');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Submitting…';
+
+  try {
+    await apiRequest('/bugs', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        project_id: CURRENT_PROJECT_ID,
+        title,
+        description,
+        severity,
+        priority,
+      }),
+    });
+
+    newBugModal.classList.add('hidden');
+    loadDashboard();
+  } catch (err) {
+    newBugError.textContent = err.message;
+    newBugError.classList.remove('hidden');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit Bug';
+  }
+});
 
 // ---------------------------------------------------------------
 // Auth
