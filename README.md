@@ -445,3 +445,4 @@ Potential extensions include:
 BugOff was developed as a team project for the **CloneFest Developer Tool Reconstruction — Bugzilla** track.
 
 The project focuses on taking the core problem addressed by Bugzilla and rebuilding it as a modern, explainable and intelligence-driven developer tool.
+ 
