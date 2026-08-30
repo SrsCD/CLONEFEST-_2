@@ -203,11 +203,10 @@ newBugForm.addEventListener('submit', async (e) => {
   submitBtn.textContent = 'Submitting…';
 
   try {
-    await apiRequest('/bugs', {
+    await apiRequest(`/bugs?project_id=${CURRENT_PROJECT_ID}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        project_id: CURRENT_PROJECT_ID,
         title,
         description,
         severity,
