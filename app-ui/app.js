@@ -10,6 +10,12 @@ const authView = document.getElementById('auth-view');
 const dashboardView = document.getElementById('dashboard-view');
 const loginForm = document.getElementById('login-form');
 const loginError = document.getElementById('login-error');
+const signupForm = document.getElementById('signup-form');
+const signupError = document.getElementById('signup-error');
+const signupSuccess = document.getElementById('signup-success');
+const showSignupLink = document.getElementById('show-signup');
+const showLoginLink = document.getElementById('show-login');
+const authSubtitle = document.getElementById('auth-subtitle');
 const userDisplay = document.getElementById('user-display');
 const logoutBtn = document.getElementById('logout-btn');
 const bugTableBody = document.getElementById('bug-table-body');
@@ -199,6 +205,93 @@ logoutBtn.addEventListener('click', () => {
   localStorage.removeItem('access_token');
   localStorage.removeItem('username');
   checkAuth();
+});
+
+// ---------------------------------------------------------------
+// Signup / login toggle
+// ---------------------------------------------------------------
+showSignupLink.addEventListener('click', (e) => {
+  e.preventDefault();
+  loginForm.classList.add('hidden');
+  signupForm.classList.remove('hidden');
+  showSignupLink.classList.add('hidden');
+  showLoginLink.classList.remove('hidden');
+  authSubtitle.textContent = 'Create an account to get started';
+  loginError.classList.add('hidden');
+  signupError.classList.add('hidden');
+  signupSuccess.classList.add('hidden');
+});
+
+showLoginLink.addEventListener('click', (e) => {
+  e.preventDefault();
+  signupForm.classList.add('hidden');
+  loginForm.classList.remove('hidden');
+  showLoginLink.classList.add('hidden');
+  showSignupLink.classList.remove('hidden');
+  authSubtitle.textContent = 'Sign in to access your bug tracking dashboard';
+  loginError.classList.add('hidden');
+  signupError.classList.add('hidden');
+  signupSuccess.classList.add('hidden');
+});
+
+signupForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  signupError.classList.add('hidden');
+  signupSuccess.classList.add('hidden');
+
+  const username = document.getElementById('signup-username').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const fullName = document.getElementById('signup-fullname').value.trim();
+  const password = document.getElementById('signup-password').value.trim();
+
+  try {
+    const registerResponse = await fetch(`${API_BASE_URL}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+        full_name: fullName || undefined,
+      }),
+    });
+
+    const registerData = await registerResponse.json();
+
+    if (!registerResponse.ok) {
+      throw new Error(registerData.detail || 'Could not create account');
+    }
+
+    // Auto-login right after successful signup so the person lands
+    // straight on the dashboard instead of having to type creds twice.
+    const loginFormData = new URLSearchParams();
+    loginFormData.append('username', username);
+    loginFormData.append('password', password);
+
+    const loginResponse = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: loginFormData.toString(),
+    });
+
+    const loginData = await loginResponse.json();
+
+    if (!loginResponse.ok) {
+      // Account was created but auto-login failed for some reason —
+      // send them to the login form instead of leaving them stuck.
+      signupSuccess.textContent = 'Account created — please sign in.';
+      signupSuccess.classList.remove('hidden');
+      showLoginLink.click();
+      return;
+    }
+
+    localStorage.setItem('access_token', loginData.access_token);
+    localStorage.setItem('username', username);
+    checkAuth();
+  } catch (err) {
+    signupError.textContent = err.message || 'Failed to create account.';
+    signupError.classList.remove('hidden');
+  }
 });
 
 // Initial run
