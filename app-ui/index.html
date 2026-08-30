@@ -100,6 +100,8 @@
       <div class="flex items-center space-x-3">
         <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-lg">B</div>
         <span class="font-bold text-xl tracking-tight">BugSight Dashboard</span>
+        <span class="text-slate-600">/</span>
+        <span id="project-name" class="text-sm text-slate-400"></span>
       </div>
       <div class="flex items-center space-x-4">
         <span id="user-display" class="text-sm text-slate-400"></span>
@@ -216,6 +218,47 @@
         <button type="submit" id="new-bug-submit"
           class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 font-semibold rounded-lg text-white shadow-lg transition duration-200">
           Submit Bug
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= NEW PROJECT MODAL ================= -->
+  <div id="new-project-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70">
+    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl">
+      <div class="flex items-center justify-between mb-5">
+        <h3 class="font-bold text-lg">Create Project</h3>
+        <button id="new-project-close" class="text-slate-400 hover:text-slate-200">&#x2715;</button>
+      </div>
+
+      <div id="new-project-error"
+        class="hidden mb-4 p-3 bg-red-950/50 border border-red-500/50 text-red-300 text-sm rounded-lg"></div>
+
+      <form id="new-project-form" class="space-y-4">
+        <div>
+          <label for="project-name-input"
+            class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Project Name</label>
+          <input type="text" id="project-name-input" required placeholder="e.g. My Bug Tracker"
+            class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition" />
+        </div>
+
+        <div>
+          <label for="project-key-input"
+            class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Project Key</label>
+          <input type="text" id="project-key-input" required placeholder="e.g. MBT" maxlength="10"
+            class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition" />
+        </div>
+
+        <div>
+          <label for="project-description-input"
+            class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Description</label>
+          <textarea id="project-description-input" rows="2" placeholder="Optional"
+            class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition"></textarea>
+        </div>
+
+        <button type="submit" id="new-project-submit"
+          class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 font-semibold rounded-lg text-white shadow-lg transition duration-200">
+          Create Project
         </button>
       </form>
     </div>

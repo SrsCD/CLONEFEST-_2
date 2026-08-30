@@ -1,9 +1,10 @@
 // Base API configuration — points at the deployed backend.
 const API_BASE_URL = 'https://clonefest-2.onrender.com';
 
-// Hardcoded for now — swap once there's a project picker in the UI.
-// (Matches the seeded "BugOff Demo" project, key BO, id 1.)
-const CURRENT_PROJECT_ID = 1;
+// Set once loadDashboard() discovers which project the logged-in user
+// actually belongs to — no longer hardcoded, since judges/new users
+// create their own project rather than being invited to a fixed one.
+let currentProjectId = null;
 
 // Turns a FastAPI error response's `detail` (string, or a list of
 // Pydantic validation error objects) into one readable string.
@@ -40,6 +41,10 @@ const newBugModal = document.getElementById('new-bug-modal');
 const newBugClose = document.getElementById('new-bug-close');
 const newBugForm = document.getElementById('new-bug-form');
 const newBugError = document.getElementById('new-bug-error');
+const newProjectModal = document.getElementById('new-project-modal');
+const newProjectClose = document.getElementById('new-project-close');
+const newProjectForm = document.getElementById('new-project-form');
+const newProjectError = document.getElementById('new-project-error');
 
 // ---------------------------------------------------------------
 // API client — every authenticated call goes through this so the
@@ -127,13 +132,26 @@ function escapeHtml(str) {
 
 async function loadDashboard() {
   bugTableBody.innerHTML = `
-    <tr><td colspan="5" class="px-6 py-8 text-center text-slate-500">Loading bugs…</td></tr>
+    <tr><td colspan="5" class="px-6 py-8 text-center text-slate-500">Loading…</td></tr>
   `;
 
   try {
+    const projects = await apiRequest('/projects');
+
+    if (!Array.isArray(projects) || projects.length === 0) {
+      showNoProjectState();
+      return;
+    }
+
+    // Use their first project. (Multi-project support / a picker is a
+    // natural next step, but every user always has at least one project
+    // now that project creation auto-assigns them as admin.)
+    currentProjectId = projects[0].id;
+    document.getElementById('project-name').textContent = projects[0].name;
+
     const [bugs, stats] = await Promise.all([
-      apiRequest(`/bugs?project_id=${CURRENT_PROJECT_ID}`),
-      apiRequest(`/projects/${CURRENT_PROJECT_ID}/stats`),
+      apiRequest(`/bugs?project_id=${currentProjectId}`),
+      apiRequest(`/projects/${currentProjectId}/stats`),
     ]);
 
     renderStats(stats);
@@ -143,6 +161,24 @@ async function loadDashboard() {
       <tr><td colspan="5" class="px-6 py-8 text-center text-red-400">${escapeHtml(err.message)}</td></tr>
     `;
   }
+}
+
+function showNoProjectState() {
+  document.getElementById('project-name').textContent = 'No project yet';
+  document.getElementById('stat-total').textContent = '— Issues';
+  document.getElementById('stat-critical').textContent = '— Critical';
+  document.getElementById('stat-resolved').textContent = '— Closed';
+  bugTableBody.innerHTML = `
+    <tr><td colspan="5" class="px-6 py-10 text-center text-slate-400">
+      You're not part of a project yet.<br />
+      <button id="empty-state-create-btn" class="mt-4 bg-indigo-600 hover:bg-indigo-500 text-xs px-4 py-2 rounded-lg font-medium transition">
+        + Create Your First Project
+      </button>
+    </td></tr>
+  `;
+  document.getElementById('empty-state-create-btn').addEventListener('click', () => {
+    newProjectModal.classList.remove('hidden');
+  });
 }
 
 function renderBugTable(bugs) {
@@ -203,7 +239,7 @@ newBugForm.addEventListener('submit', async (e) => {
   submitBtn.textContent = 'Submitting…';
 
   try {
-    await apiRequest(`/bugs?project_id=${CURRENT_PROJECT_ID}`, {
+    await apiRequest(`/bugs?project_id=${currentProjectId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -222,6 +258,45 @@ newBugForm.addEventListener('submit', async (e) => {
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = 'Submit Bug';
+  }
+});
+
+newProjectClose.addEventListener('click', () => {
+  newProjectModal.classList.add('hidden');
+});
+
+newProjectModal.addEventListener('click', (e) => {
+  if (e.target === newProjectModal) newProjectModal.classList.add('hidden');
+});
+
+newProjectForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  newProjectError.classList.add('hidden');
+
+  const name = document.getElementById('project-name-input').value.trim();
+  const key = document.getElementById('project-key-input').value.trim().toUpperCase();
+  const description = document.getElementById('project-description-input').value.trim();
+
+  const submitBtn = document.getElementById('new-project-submit');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Creating…';
+
+  try {
+    await apiRequest('/projects', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, key, description }),
+    });
+
+    newProjectModal.classList.add('hidden');
+    newProjectForm.reset();
+    loadDashboard();
+  } catch (err) {
+    newProjectError.textContent = err.message;
+    newProjectError.classList.remove('hidden');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Create Project';
   }
 });
 
