@@ -1,7 +1,5 @@
-// Base API configuration
-const API_BASE_URL = window.location.origin.includes('localhost')
-  ? 'http://localhost:8000'
-  : '';
+// Base API configuration — points at the deployed backend.
+const API_BASE_URL = 'https://clonefest-2.onrender.com';
 
 // Hardcoded for now — swap once there's a project picker in the UI.
 // (Matches the seeded "BugOff Demo" project, key BO, id 1.)
